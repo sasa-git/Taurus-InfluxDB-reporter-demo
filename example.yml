@@ -1,0 +1,54 @@
+execution:
+- concurrency: 2
+  ramp-up: 2s
+  hold-for: 20s
+  scenario: Sample
+
+scenarios:
+  Sample:
+    default-address: https://blazedemo.com
+    requests: 
+      - /
+      - /vacation.html
+
+reporting:
+- module: final-stats # テスト後の要約統計量を提供します
+  summary: true  # 全体的なサンプル数と失敗の割合
+  percentiles: true  # 平均時間と割合を表示
+  summary-labels: true # サンプルラベル、ステータス、完了率、平均時間、エラーのリストを提供
+  failed-labels: false  # 失敗したサンプルラベルのリストを提供
+  test-duration: true  # テスト期間を提供します
+  dump-csv: ./perf_result_csv.csv
+- module: console
+- module: blazemeter
+- module: influxdb-reporter
+
+
+modules:
+  influxdb-reporter:
+    host: localhost # influxdb address (default: localhost)
+    port: 8086 # port (default: 8086)
+    database: jmeter # the datasource name
+    measurement: taurus # the measurement name
+    username: taurus # username if influxdb authentication enabled
+    password: password  # password if influxdb authentication enabled
+    # summary: true  # overall samples count and percent of failures # unused parameter
+    # percentiles: true  # send average times and percentiles # unused parameter
+    # send-data: true # enable/disable the sending # unused parameter
+    # send-interval: 5s   # send data each n-th second # unused parameter
+    application: hogehoge
+
+# ↓dosen't work
+# modules:
+#   influxdb:
+#     class: influxdb_reporter.InfluxdbStatusReporter
+#     host: localhost # influxdb address (default: localhost)
+#     port: 8086 # port (default: 8086)
+#     database: jmeter # the datasource name
+#     measurement: taurus # the measurement name
+#     username: ... # username if influxdb authentication enabled
+#     password: ...  # password if influxdb authentication enabled
+#     summary: true  # overall samples count and percent of failures
+#     percentiles: true  # send average times and percentiles
+#     send-data: true # enable/disable the sending
+#     send-interval: 30s   # send data each n-th second

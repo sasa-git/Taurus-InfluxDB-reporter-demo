@@ -1,0 +1,24 @@
+
+version: "3"
+services:
+  influxdb:
+    image: influxdb:1.2
+    platform: linux/x86_64
+    ports:
+      - 8086:8086
+      - 8083:8083
+    environment:
+      - INFLUXDB_ADMIN_ENABLED=true
+    networks:
+      - influxdb-networks
+  grafana:
+    image: grafana/grafana
+    platform: linux/arm64/v8 # M1 Macの場合付ける
+    ports:
+      - 3000:3000
+    depends_on:
+      - influxdb
+    networks:
+      - influxdb-networks
+networks:
+  influxdb-networks:
